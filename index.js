@@ -1,29 +1,29 @@
-import http from "node:http";
-import fs from "node:fs";
+import express from "express";
+import path from "path";
+import { fileURLToPath } from "node:url";
 
-const server = http
-  .createServer((req, res) => {
-    res.writeHead(200, { "Content-Type": "text/html" });
-    if (req.url === "/") {
-      fs.readFile("index.html", (err, data) => {
-        res.write(data);
-        res.end();
-      });
-    } else if (req.url === "/about") {
-      fs.readFile("about.html", (err, data) => {
-        res.write(data);
-        res.end();
-      });
-    } else if (req.url === "/contact-me") {
-      fs.readFile("contact-me.html", (err, data) => {
-        res.write(data);
-        res.end();
-      });
-    } else {
-      fs.readFile("404.html", (err, data) => {
-        res.write(data);
-        res.end();
-      });
-    }
-  })
-  .listen(8080);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const app = express();
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
+app.get("/about", (req, res) => {
+  res.sendFile(path.join(__dirname, "about.html"));
+});
+
+app.get("/contact-me", (req, res) => {
+  res.sendFile(path.join(__dirname, "contact-me.html"));
+});
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "404.html"));
+});
+
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log("App running on port 3000");
+});
